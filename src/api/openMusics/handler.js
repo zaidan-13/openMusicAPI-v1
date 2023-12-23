@@ -51,7 +51,7 @@ class MusicsHandler {
     async putMusicByIdHandler(request, h) {
             const { id } = request.params;
 
-            this._service.editMusicById(id, request.payload);
+            await this._service.editMusicById(id, request.payload);
 
             return {
                 status: 'success',
