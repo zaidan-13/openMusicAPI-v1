@@ -3,7 +3,7 @@ require("dotenv").config();
 const ClientError = require('./exceptions/ClientError')
 const Hapi = require('@hapi/hapi')
 const openMusics = require("./api/openMusics");
-const OpenMusicService = require("./services/inMemory/OpenMusicService");
+const OpenMusicService = require("./services/postgres/OpenMusicService");
 
 const init = async () => {
     const server = Hapi.server({

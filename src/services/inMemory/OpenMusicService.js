@@ -7,7 +7,7 @@ class NotesService {
         this._music = [];
     }
 
-    addNote({ title,  year, genre, performer, duration}) {
+    addMusic({ title,  year, genre, performer, duration}) {
         const id = nanoid(16);
 
         const newMusic = {
@@ -25,11 +25,11 @@ class NotesService {
         return id;
     }
 
-    getNotes() {
+    getMusics() {
         return this._music;
     }
 
-    getNoteById(id) {
+    getMusicById(id) {
         const song = this._music.filter((n) => n.id === id)[0];
 
         if (!song) {
@@ -38,7 +38,7 @@ class NotesService {
         return song;
     }
 
-    editNoteById(id, { title,  year, genre, performer, duration }) {
+    editMusicById(id, { title,  year, genre, performer, duration }) {
         const index = this._music.findIndex((song) => song.id === id);
 
         if (index === -1) {
@@ -51,7 +51,7 @@ class NotesService {
         };
     }
 
-    deleteNoteById(id) {
+    deleteMusicById(id) {
         const index = this._music.findIndex((song) => song.id === id);
 
         if (index === -1) {
