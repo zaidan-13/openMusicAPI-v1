@@ -1,20 +1,23 @@
 /* eslint-disable no-unused-vars */
 
-class MusicsHandler {
-    constructor(service) {
+class SongsHandler {
+    constructor(service, validator) {
         this._service = service;
+        this._validator = validator;
 
         this.postMusicHandler = this.postMusicHandler.bind(this);
         this.getMusicsHandler = this.getMusicsHandler.bind(this);
         this.getMusicByIdHandler = this.getMusicByIdHandler.bind(this);
         this.putMusicByIdHandler = this.putMusicByIdHandler.bind(this);
         this.deleteMusicByIdHandler = this.deleteMusicByIdHandler.bind(this);
+
     }
 
     async postMusicHandler(request, h) {
-            const { title, year, genre, performer, duration } = request.payload;
+            this._validator.validateSongPayload(request.payload);
+            const { title, year, genre, performer, duration, albumId } = request.payload;
 
-            const songId = await this._service.addMusic({title, year, genre, performer, duration});
+            const songId = await this._service.addSong({title, year, genre, performer, duration, albumId});
 
             const response = h.response({
                 status: 'success',
@@ -27,19 +30,24 @@ class MusicsHandler {
             return response;
     }
 
-    async getMusicsHandler() {
-        const songs = await this._service.getMusics();
+    async getMusicsHandler(request) {
+        const params = request.query;
+        const songs = await this._service.getSongs(params);
         return {
-            status: 'success',
-            data: {
-                songs,
-            },
+        status: 'success',
+        data: {
+            songs: songs.map(song => ({
+            id: song.id,
+            title: song.title,
+            performer: song.performer,
+            }), ),
+        },
         };
     }
 
     async getMusicByIdHandler(request, h) {
             const { id } = request.params;
-            const song = await this._service.getMusicById(id);
+            const song = await this._service.getSongById(id);
             return {
                 status: 'success',
                 data: {
@@ -49,9 +57,10 @@ class MusicsHandler {
     }
 
     async putMusicByIdHandler(request, h) {
+            this._validator.validateSongPayload(request.payload);
             const { id } = request.params;
 
-            await this._service.editMusicById(id, request.payload);
+            await this._service.editSongById(id, request.payload);
 
             return {
                 status: 'success',
@@ -61,7 +70,7 @@ class MusicsHandler {
 
     async deleteMusicByIdHandler(request, h) {
             const { id } = request.params;
-            await this._service.deleteMusicById(id);
+            await this._service.deleteSongById(id);
     
             return {
                 status: 'success',
@@ -70,4 +79,4 @@ class MusicsHandler {
     }
 }
 
-module.exports = MusicsHandler;
+module.exports = SongsHandler;
